@@ -1,11 +1,11 @@
 package com.model;
 
+import java.sql.Statement;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.HashMap;
-import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Scanner;
@@ -103,14 +103,15 @@ public class Customer {
 				break;
 			}
 		}
-		printBill(cart);
 		updateDatabase(cart);
+		printBill(cart);
 	}
 
 	public static void printBill(Map<Integer, Bill> cart) {
 
 		double total = 0;
 		double totalDiscount = 0;
+		Map<String, Double> bill_Amount = new HashMap<>();
 
 		System.out.println();
 		System.out.println("====================================================================================");
@@ -134,6 +135,10 @@ public class Customer {
 			System.out.printf("| %-20s | %-5d | %-10.2f | %-10.2f | %-10.2f | %-10.2f |%n", p.getName(),
 					item.getquantity(), p.getPrice(), amount, discount, finalTotal);
 		}
+		double payable_Amount = total - totalDiscount;
+		bill_Amount.put("total_Amount", total);
+		bill_Amount.put("total_Discount", totalDiscount);
+		bill_Amount.put("payable_Amount", payable_Amount);
 
 		System.out.println("====================================================================================");
 
@@ -141,9 +146,11 @@ public class Customer {
 
 		System.out.printf("| %-52s | %-10.2f |%n", "Total Discount", totalDiscount);
 
-		System.out.printf("| %-52s | %-10.2f |%n", "Payable Amount", total - totalDiscount);
+		System.out.printf("| %-52s | %-10.2f |%n", "Payable Amount", payable_Amount);
 
 		System.out.println("====================================================================================");
+
+		saveBill(bill_Amount, cart);
 	}
 
 	public static void updateDatabase(Map<Integer, Bill> cart) {
@@ -164,6 +171,60 @@ public class Customer {
 			e.printStackTrace();
 		}
 
+	}
+
+	public static void saveBill(Map<String, Double> bill_Amount,Map<Integer, Bill> cart) {
+		String saveBill = "insert into bills(total_amount, total_discount, final_amount) values(?,?,?)";
+		try (Connection con = DatabaseConnection.createConnection();
+				PreparedStatement pst = con.prepareStatement(saveBill, Statement.RETURN_GENERATED_KEYS);) {
+			pst.setDouble(1, bill_Amount.get("total_Amount"));
+			pst.setDouble(2, bill_Amount.get("total_Discount"));
+			pst.setDouble(3, bill_Amount.get("payable_Amount"));
+			pst.executeUpdate();
+			ResultSet rs = pst.getGeneratedKeys();
+
+			if (rs.next()) {
+				int billId = rs.getInt(1);
+				System.out.println("Generated Bill ID: " + billId);
+				saveBillItems(billId , cart);
+			}
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+
+	}
+
+	public static void saveBillItems(int billId, Map<Integer, Bill> cart) {
+		/*
+		 * CREATE TABLE bill_items( item_id INT PRIMARY KEY AUTO_INCREMENT, bill_id INT,
+		 * product_id INT, quantity INT, price DOUBLE, amount DOUBLE, discount DOUBLE,
+		 * final_amount DOUBLE );
+		 */
+		String billItemsSql = "insert into bill_items(bill_id  , product_id , quantity, price ,amount, discount, final_amount) values (?,?,?,?,?,?,?)";
+		try(Connection con = DatabaseConnection.createConnection();
+				PreparedStatement pst = con.prepareStatement(billItemsSql);){
+			for(Bill item: cart.values()) {
+				Product p = item.getProduct();
+				double amount = (p.getPrice() * p.getQuantity());
+				double discount = (p.getDiscount() * p.getQuantity());
+				double final_amount = amount - discount;
+				pst.setInt(1, billId);
+				pst.setInt(2, p.getId());
+				pst.setInt(3, p.getQuantity());
+				pst.setDouble(4, p.getPrice());
+				pst.setDouble(5, amount);
+				pst.setDouble(6, discount);
+				pst.setDouble(7, final_amount);
+				
+				pst.executeUpdate();
+				
+			}
+			
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 
 }

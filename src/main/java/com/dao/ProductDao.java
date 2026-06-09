@@ -46,7 +46,7 @@ public class ProductDao {
 			e.printStackTrace();
 		}
 		return list;
-	}
+	} 
 	public Map<String, List> displayProductListToUser(){
 		Map<String, List> productMap = new HashMap<>();
 		String sql = "select id , name, category, price, discountType, discount from product";

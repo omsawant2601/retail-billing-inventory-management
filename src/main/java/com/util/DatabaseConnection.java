@@ -36,7 +36,7 @@ public class DatabaseConnection {
 		} catch (SQLException e) {
 			e.printStackTrace();
 		}
-	}
+	} 
 	public static List<Product> productRowMapper(ResultSet rs) throws SQLException{
 		List<Product> list = new ArrayList();
 		while(rs.next()) {

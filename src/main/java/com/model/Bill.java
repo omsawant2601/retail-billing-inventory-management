@@ -13,7 +13,7 @@ public class Bill {
 		return product;
 	}
 	public void setProduct(Product product) {
-		this.product = product;
+		this.product = product; 
 	}
 	public Bill( Product product,int quantity) {
 		super();
