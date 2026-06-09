@@ -84,42 +84,6 @@ The system manages products, inventory, billing, discounts, offers, sales histor
 
 ---
 
-Project Structure
-src
-│
-├── model
-│   ├── Product.java
-│   ├── Bill.java
-│   ├── BillItem.java
-│   ├── User.java
-│   └── Offer.java
-│
-├── dao
-│   ├── ProductDAO.java
-│   ├── BillDAO.java
-│   ├── UserDAO.java
-│   └── ReportDAO.java
-│
-├── service
-│   ├── BillingService.java
-│   ├── ProductService.java
-│   ├── InventoryService.java
-│   ├── ReportService.java
-│   └── OfferService.java
-│
-├── util
-│   ├── DatabaseConnection.java
-│   ├── TablePrinter.java
-│   └── Constants.java
-│
-├── menu
-│   ├── LoginMenu.java
-│   ├── ProductMenu.java
-│   ├── BillingMenu.java
-│   └── ReportMenu.java
-│
-└── main
-    └── Main.java
 
 ---
 
