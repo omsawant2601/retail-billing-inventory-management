@@ -2,12 +2,17 @@ package com.dao;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 import com.model.Bill;
 import com.model.Product;
+import com.model.Student;
 import com.util.DatabaseConnection;
+import com.util.MyDataBase;
 
 public class DatabaseDao {
 	
@@ -32,5 +37,76 @@ public class DatabaseDao {
 		}
 
 	}
+ 
 	
+	//Add new item 
+	public  int addNewProduct(Product p) {
+		int check = 0;
+		String addNewSql = "insert into product (name,category,price,quantity,discountType,discount) values(?,?,?,?,?,?)";
+		try(Connection con = DatabaseConnection.createConnection();
+				PreparedStatement pst = con.prepareStatement(addNewSql);){
+			pst.setString(1, p.getName());
+			pst.setString(2, p.getCategory());
+			pst.setDouble(3, p.getPrice());
+			pst.setInt(4, p.getQuantity());
+			pst.setString(5, p.getDiscountType());
+			pst.setDouble(6, p.getDiscount());
+			check = pst.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return check;
+	}
+	//update product 
+	public  int updateProductQuantity(Product p) {
+		int check = 0;
+		String updateSql = "update product set quantity = ? where id = ?";
+		try(Connection con = DatabaseConnection.createConnection();
+				PreparedStatement pst = con.prepareStatement(updateSql);){
+			pst.setInt(1, p.getQuantity());
+			pst.setInt(2, p.getId());
+			check = pst.executeUpdate();
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return check ;
+	}
+	
+	//fetch product by id
+	public  Product findProductByiId(int id){
+ 		Product p = null;
+ 		String sql = "select * from product where id = ?";
+ 		try(Connection con = DatabaseConnection.createConnection();
+ 				PreparedStatement prt = con.prepareStatement(sql);){
+ 			prt.setInt(1, id);
+ 			ResultSet rs = prt.executeQuery();
+ 			List<Product> list = DatabaseConnection.productRowMapper(rs);
+ 			if( ! list.isEmpty()) {
+ 				p = list.get(0);
+ 			}
+ 			
+ 		}catch (SQLException e) {
+ 			e.printStackTrace();
+ 		}
+ 		return p;
+ 	}
+	
+	//delete product
+	public int deleteProduct(int id) {
+		int check = 0;
+		
+		String deleteSql = "delete from product where id = ?";
+		try(Connection con = DatabaseConnection.createConnection();
+				PreparedStatement pst = con.prepareStatement(deleteSql);){
+			pst.setInt(1,id);
+			check = pst.executeUpdate();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		return check ;
+	}
 }
