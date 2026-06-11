@@ -68,14 +68,11 @@ public class Product {
 		this.discount = discount;
 	}
 	@Override
-//	public String toString() {
-//		return "Product [id=" + id + ", name=" + name + ", category=" + category + ", price=" + price + ", quantity="
-//				+ quantity + ", discountType=" + discountType + ", discount=" + discount + "]";
-//	}
 	public String toString() {
-		return  id + "\t" + name + "\t" + category + "\t" + price + "\t"
-				+ quantity + "\t" + discountType + "\t" + discount ;
+		return "Product [id=" + id + ", name=" + name + ", category=" + category + ", price=" + price + ", quantity="
+				+ quantity + ", discountType=" + discountType + ", discount=" + discount + "]";
 	}
+
 	
 
 }

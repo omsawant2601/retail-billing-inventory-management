@@ -1,6 +1,7 @@
 package com.dao;
 
 import java.sql.Connection;
+
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,14 +15,40 @@ import com.util.DatabaseConnection;
 import com.util.TablePrinter;
 
 public class CashierDao {
-
+	
 	public void cashier() {
+		Scanner sc = new Scanner(System.in);
+		while(true) {
+			System.out.println("Welcome Cashier, Please select any one option ");
+			System.out.println("1 = create bill");
+			System.out.println("2 = go back Logout Page");
+			int choice  = sc.nextInt();
+			switch(choice) {
+			case 1:
+				cashierStart();
+				break;
+				
+			case 2:
+				break;
+			}
+			System.out.print("logout as Cashier (Y/N):- ");
+			char yesOrNo = sc.next().charAt(0);
+			if (yesOrNo == 'y' || yesOrNo == 'Y') {
+				System.out.println("Redirecting to main manu...");
+				break;
+			}
+			System.out.println();
+		}
+		
+	}
+
+	public void cashierStart() {
 		// Display products to Cashier
 		TablePrinter.displayItems();
 		Scanner sc = new Scanner(System.in);
 		while (true) {
 			addToCart();
-			System.out.print("proceed to next bill :- ");
+			System.out.print("proceed to next bill (Y/N):- ");
 			char yesOrNo = sc.next().charAt(0);
 			if (yesOrNo == 'n' || yesOrNo == 'N') {
 				System.out.println("Redirecting to main manu...");
@@ -88,7 +115,7 @@ public class CashierDao {
 				cart.put(id, new Bill(product, qyt));
 			}
 
-			System.out.print("Do you want to add another products (y/n) :-");
+			System.out.print("Do you want to add another products (Y/N) :-");
 			char ynrespo = sc.next().charAt(0);
 			if (ynrespo == 'n' || ynrespo == 'N') {
 				break;

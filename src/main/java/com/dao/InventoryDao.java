@@ -1,5 +1,6 @@
 package com.dao;
 
+import java.util.List;
 import java.util.Scanner;
 
 import com.model.Product;
@@ -12,11 +13,15 @@ public class InventoryDao {
 		Scanner sc = new Scanner(System.in);
 		DatabaseDao dd = new DatabaseDao();
 		while (true) {
-			System.out.println("welcome in Inventory,");
-			System.out.println("select 1 to add new Product");
-			System.out.println("select 2 to update Product");
-			System.out.println("select 3 to verify Product");
-			System.out.println("select 4 to delete Product" );
+			System.out.println("welcome in Inventory, Please Select any one option");
+			System.out.println("1 = add new Product");
+			System.out.println("2 = update Product");
+			System.out.println("3 = add new quantity in exiting Quantity of Product");
+			System.out.println("4 = verify one Product");
+			System.out.println("5 = verify all product" );
+			System.out.println("6 = delete Product" );
+			System.out.println("7 = low quantity" );
+			System.out.println("8 = go back to Logout page" );
 			int choice = sc.nextInt();
 			switch (choice) {
 			case 1:
@@ -69,14 +74,35 @@ public class InventoryDao {
 					System.out.println("facing problem to update product");
 				}
 				break;
-
 			case 3:
-				System.out.print("Enter the id to verify product :- ");
-				int idfind = sc.nextInt();
-				System.out.println(dd.findProductByiId(idfind));
+				System.out.println("Enter id of product to Add new Quantity :- ");
+				int idAdd = sc.nextInt();
+				Product pAddQuantity = dd.findProductByiId(idAdd);
+				
+				System.out.print("Enter Quantity of product to Add :- ");
+				int quantityAddQuantity = sc.nextInt();
+				pAddQuantity.setQuantity(quantityAddQuantity + pAddQuantity.getQuantity() );
+				
+				int resultOfAddQuantity = dd.updateProductQuantity(pAddQuantity);
+				if (resultOfAddQuantity == 1) {
+					System.out.println("Quantity added Successfully");
+				} else {
+					System.out.println("facing problem to update product");
+				}
 				break;
 
 			case 4:
+				System.out.print("Enter the id to verify product :- ");
+				int idfind = sc.nextInt();
+				System.out.println(dd.findProductByiId(idfind));
+				TablePrinter.displaySingleProduct(dd.findProductByiId(idfind));
+				break;
+
+			case 5 :
+				TablePrinter.displayProducts(dd.displayAllProducts());
+				break;
+				
+			case 6:
 				System.out.print("Enter the id to delete product :- ");
 				int idDelete = sc.nextInt();
 				int resultOfDelete = dd.deleteProduct(idDelete);
@@ -86,11 +112,23 @@ public class InventoryDao {
 					System.out.println("facing problem to delete product");
 				}
 				break;
+				
+			case 7:
+				System.out.println("Enter low Quantity :- ");
+				int lowQuantity = sc.nextInt();
+				List<Product> plist = dd.lowStock(lowQuantity);
+				if(!plist.isEmpty()) {
+					TablePrinter.displayProducts(plist);
+				}
+				break;
+				
+			case 8 :
+				break;
 
 			}
-			System.out.print("To continue in Inventory press y or n  :- ");
+			System.out.print("log out as Inventory Assistance press ()Y/N :- ");
 			char yesOrNo = sc.next().charAt(0);
-			if(yesOrNo == 'n' || yesOrNo =='N') {
+			if(yesOrNo == 'y' || yesOrNo =='Y') {
 				System.out.println("Redirecting to Main manu...");
 				break;
 			}
