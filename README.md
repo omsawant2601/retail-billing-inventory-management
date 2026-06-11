@@ -158,9 +158,9 @@ Store Inventory History
 * [x] Product CRUD
 * [x] Display Products
 * [x] Cart Management
-* [ ] Bill History
+* [x] Bill History
 * [ ] Inventory History
-* [ ] Revenue Reports
+* [x] Revenue Reports
 * [ ] Offer Management
 * [ ] React Frontend
 * [ ] Spring Boot Migration
